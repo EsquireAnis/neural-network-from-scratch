@@ -5,7 +5,7 @@ public class Matrix {
 
     public Matrix (float[] entries, int numRows, int numColumns) {
         if ((numRows * numColumns) != entries.length) {
-            // An error
+            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
         }
 
         this.numRows = numRows;
@@ -20,9 +20,54 @@ public class Matrix {
         }
     }
 
-    public Matrix matrixMultiply (Matrix m) {
+    public float[][] getMatrix () {
+        return this.copy().matrix;
+    }
+
+    public Matrix add (Matrix m) {
+        if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
+            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
+        }
+
+        int newNumRows = this.numRows;
+        int newNumColumns = this.numColumns;
+        int newNumEntries = newNumRows * newNumColumns;
+        float[] newEntries = new float[newNumEntries];
+
+        for (int r = 0; r < newNumRows; r++) {
+            for (int c = 0; c < newNumColumns; c++) {
+                int newIndex = r * newNumColumns + c;
+                newEntries[newIndex] = this.matrix[r][c] + m.matrix[r][c];
+            }
+        }
+
+        return new Matrix (newEntries, newNumRows, newNumColumns);
+    }
+
+    public Matrix substract (Matrix m) {
+        if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
+            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
+        }
+
+        Matrix mNegated = m.multiply(-1);
+
+        return this.add(mNegated);
+    }
+
+    public Matrix multiply (float n) {
+        Matrix m = this.copy();
+        for (int r = 0; r < m.numRows; r++) {
+            for (int c = 0; c < m.numColumns; c++) {
+                m.matrix[r][c] *= n;
+            }
+        }
+
+        return m;
+    }
+
+    public Matrix multiply (Matrix m) {
         if (this.numColumns != m.numRows) {
-            // An error
+            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
         }
 
         int newNumRows = this.numRows;
@@ -30,7 +75,18 @@ public class Matrix {
         int newNumEntries = newNumRows * newNumColumns;
         float[] newEntries = new float[newNumEntries];
 
-        // Add logic for multiplication
+        for (int rLeft = 0; rLeft < this.numRows; rLeft++) {
+            for (int cRight = 0; cRight < m.numColumns; cRight++) {
+                int newIndex = rLeft * newNumColumns + cRight;
+                float newEntry = 0;
+
+                for (int k = 0; k < this.numColumns; k++) {
+                    newEntry += (this.matrix[rLeft][k] * m.matrix[k][cRight]);
+                }
+
+                newEntries[newIndex] = newEntry;
+            }
+        }
 
         return new Matrix(newEntries, newNumRows, newNumColumns);
     }
@@ -51,10 +107,6 @@ public class Matrix {
         return new Matrix(newEntries, newNumRows, newNumColumns);
     }
 
-    public float[][] getMatrix () {
-        return this.matrix;
-    }
-
     public void printMatrix () {
         String matrixAsText = "CEILING\n";
 
@@ -73,22 +125,19 @@ public class Matrix {
         System.out.println(matrixAsText);
     }
 
-    public static void main (String[] args) {
-        float[] entries1 = {1, 2, 3, 4, 5, 6};
-        Matrix m1 = new Matrix(entries1, 2, 3);
+    public Matrix copy () {
+        int newNumRows = this.numRows;
+        int newNumColumns = this.numColumns;
+        int newNumEntries = newNumRows * newNumColumns;
+        float newEntries[] = new float[newNumEntries];
 
-        m1.printMatrix();
+        for (int r = 0; r < this.numRows; r++) {
+            for (int c = 0; c < this.numColumns; c++) {
+                int newIndex = r * this.numColumns + c;
+                newEntries[newIndex] = this.matrix[r][c];
+            }
+        }
 
-        float[][] matrixAsDS = m1.getMatrix();
-        System.out.println(matrixAsDS[0][1]);
-
-        Matrix m1Transposed = m1.transpose();
-        m1Transposed.printMatrix();
-
-        float[] entries2 = {10, 11, 20, 21, 30, 31};
-        Matrix m2 = new Matrix(entries2, 3, 2);
-        m2.printMatrix();
-        Matrix m1Multm2 = m1.matrixMultiply(m2);
-        m1Multm2.printMatrix();
+        return new Matrix (newEntries, newNumRows, newNumColumns);
     }
 }
