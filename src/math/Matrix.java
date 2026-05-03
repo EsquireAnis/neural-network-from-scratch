@@ -1,3 +1,5 @@
+package math;
+
 public class Matrix {
     private float[][] matrix;
     private int numRows;
@@ -5,7 +7,7 @@ public class Matrix {
 
     public Matrix (float[] entries, int numRows, int numColumns) {
         if ((numRows * numColumns) != entries.length) {
-            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
+            throw new InvalidMatrixDimensionsException("Matrix dimensions don't match the entries");
         }
 
         this.numRows = numRows;
@@ -26,7 +28,7 @@ public class Matrix {
 
     public Matrix add (Matrix m) {
         if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
-            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
+            throw new InvalidMatrixDimensionsException("Addition is undefined as matrix dimensions do not match");
         }
 
         int newNumRows = this.numRows;
@@ -46,7 +48,7 @@ public class Matrix {
 
     public Matrix substract (Matrix m) {
         if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
-            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
+            throw new InvalidMatrixDimensionsException("Substraction is impossible as matrix dimensions do not match");
         }
 
         Matrix mNegated = m.multiply(-1);
@@ -67,7 +69,7 @@ public class Matrix {
 
     public Matrix multiply (Matrix m) {
         if (this.numColumns != m.numRows) {
-            throw new InvalidMatrixDimensionsException("Matrix dimensions are invalid for this operation");
+            throw new InvalidMatrixDimensionsException("Matrices dimensions are invalid for multiplication");
         }
 
         int newNumRows = this.numRows;
@@ -108,7 +110,7 @@ public class Matrix {
     }
 
     public void printMatrix () {
-        String matrixAsText = "CEILING\n";
+        String matrixAsText = "MATRIX CEILING\n";
 
         for (int r = 0; r < this.numRows; r++) {
             for (int c = 0; c < this.numColumns; c++) {
@@ -118,7 +120,7 @@ public class Matrix {
                 matrixAsText += "\n";
             }
             else {
-                matrixAsText += "\nFLOOR";
+                matrixAsText += "\nMATRIX FLOOR";
             }
         }
 
