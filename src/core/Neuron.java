@@ -1,16 +1,22 @@
 package core;
 
 public class Neuron {
-    private float activation = 0;
-    private float threshold;
-
     private final float DEFAULT_THRESHOLD = 0.5f;
+    private final String DEFAULT_NAME = "Generic neuron";
+
+    private float activation = 0;
+    private float threshold = DEFAULT_THRESHOLD;
+    private String name;
 
     public Neuron () {
-        this.threshold = DEFAULT_THRESHOLD;
+        this.name = DEFAULT_NAME;
     }
 
-    public Neuron (float threshold) {
+    public Neuron (String name) {
+        this.name = name;
+    }
+
+    void setupThreshold (float threshold) {
         if (threshold < 0 || threshold > 1) {
             throw new InvalidThresholdValue("The threshold must be between 0 and 1");
         }
