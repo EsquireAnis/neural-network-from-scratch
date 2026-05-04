@@ -24,15 +24,23 @@ public class Neuron {
         this.threshold = threshold;
     }
 
-    public void addActivation (float n) {
+    void activate () {
+        this.activation = 1;
+    }
+
+    void addActivation (float n) {
         this.activation += n;
     }
 
-    public boolean isFiring () {
+    boolean isFiring () {
         return (this.activation >= this.threshold);
     }
 
     void resetActivation () {
         this.activation = 0f;
+    }
+
+    String getName () {
+        return this.name;
     }
 }
