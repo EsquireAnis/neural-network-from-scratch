@@ -23,9 +23,10 @@ public class Neuron {
     }
 
     public boolean isFiring () {
-        if (this.activation >= this.threshold) {
-            return true;
-        }
-        return false;
+        return (this.activation >= this.threshold);
+    }
+
+    void resetActivation () {
+        this.activation = 0f;
     }
 }
