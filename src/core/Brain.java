@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Brain {
-    private final float DEFAULT_LEARNING_RATE = 0.1f;
-    Scanner scanner = new Scanner(System.in);
+    private static final float DEFAULT_LEARNING_RATE = 0.1f;
+    private static final Scanner scanner = new Scanner(System.in);
 
     private float learningRate;
-    private List<Neuron> inputNeurons;
-    private List<Neuron> outputNeurons;
-    private List<Neuron> allNeurons = new ArrayList<>();
-    private List<Synapse> synapses;
+    private final List<Neuron> inputNeurons;
+    private final List<Neuron> outputNeurons;
+    private final List<Neuron> allNeurons = new ArrayList<>();
+    private final List<Synapse> synapses;
 
     public Brain (List<Neuron> inputNeurons, List<Neuron> outputNeurons, List<Synapse> synapses) {
         this.learningRate = DEFAULT_LEARNING_RATE;

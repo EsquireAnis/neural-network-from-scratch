@@ -1,8 +1,8 @@
 package core;
 
 public class Synapse {
-    private Neuron from;
-    private Neuron to;
+    private final Neuron from;
+    private final Neuron to;
     private float weight;
 
     public Synapse (Neuron from, Neuron to, float weight) {

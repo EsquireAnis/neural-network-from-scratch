@@ -1,9 +1,9 @@
 package math;
 
 public class Matrix {
-    private float[][] matrix;
-    private int numRows;
-    private int numColumns;
+    private final float[][] matrix;
+    private final int numRows;
+    private final int numColumns;
 
     public Matrix (float[] entries, int numRows, int numColumns) {
         if ((numRows * numColumns) != entries.length) {
@@ -110,17 +110,17 @@ public class Matrix {
     }
 
     public void printMatrix () {
-        String matrixAsText = "MATRIX CEILING\n";
+        StringBuilder matrixAsText = new StringBuilder("MATRIX CEILING\n");
 
         for (int r = 0; r < this.numRows; r++) {
             for (int c = 0; c < this.numColumns; c++) {
-                matrixAsText += Float.toString(this.matrix[r][c]) + " ";
+                matrixAsText.append(Float.toString(this.matrix[r][c])).append(" ");
             }
             if (r != (this.numRows - 1)) {
-                matrixAsText += "\n";
+                matrixAsText.append("\n");
             }
             else {
-                matrixAsText += "\nMATRIX FLOOR";
+                matrixAsText.append("\nMATRIX FLOOR");
             }
         }
 
@@ -131,7 +131,7 @@ public class Matrix {
         int newNumRows = this.numRows;
         int newNumColumns = this.numColumns;
         int newNumEntries = newNumRows * newNumColumns;
-        float newEntries[] = new float[newNumEntries];
+        float[] newEntries = new float[newNumEntries];
 
         for (int r = 0; r < this.numRows; r++) {
             for (int c = 0; c < this.numColumns; c++) {

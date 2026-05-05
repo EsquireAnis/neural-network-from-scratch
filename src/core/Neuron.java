@@ -1,12 +1,12 @@
 package core;
 
 public class Neuron {
-    private final float DEFAULT_THRESHOLD = 0.5f;
-    private final String DEFAULT_NAME = "Generic neuron";
+    private static final float DEFAULT_THRESHOLD = 0.5f;
+    private static final String DEFAULT_NAME = "Generic neuron";
 
     private float activation = 0;
     private float threshold = DEFAULT_THRESHOLD;
-    private String name;
+    private final String name;
 
     public Neuron () {
         this.name = DEFAULT_NAME;

@@ -1,7 +1,7 @@
 package math;
 
 public class Vector {
-    private Matrix m;
+    private final Matrix m;
 
     public Vector (float[] entries) {
         this.m = new Matrix(entries, entries.length, 1);
@@ -33,37 +33,6 @@ public class Vector {
         return entries;
     }
 
-    public float dotProduct (Vector v) {
-        float[] thisEntries = this.getVector();
-        float[] vEntries = v.getVector();
-        int length = thisEntries.length;
-
-        if (!this.isSameLength(v)) {
-            throw new InvalidMatrixDimensionsException("Dot product is undefined as these vectors have different dimensions");
-        }
-
-        float result = 0;
-        for (int i = 0; i < length; i++) {
-            result += (thisEntries[i] * vEntries[i]);
-        }
-
-        return result;
-    }
-
-    public Matrix outerProduct (Vector v) {
-        return this.m.multiply(v.m.transpose());
-    }
-
-    public Vector scale (float n) {
-        float[] entries = this.getVector();
-
-        for (int i = 0; i < entries.length; i++) {
-            entries[i] *= n;
-        }
-
-        return new Vector(entries);
-    }
-
     public Vector add (Vector v) {
         float[] thisEntries = this.getVector();
         float[] vEntries = v.getVector();
@@ -89,13 +58,44 @@ public class Vector {
         return this.add(v.scale(-1));
     }
 
+    public Vector scale (float n) {
+        float[] entries = this.getVector();
+
+        for (int i = 0; i < entries.length; i++) {
+            entries[i] *= n;
+        }
+
+        return new Vector(entries);
+    }
+
+    public float dotProduct (Vector v) {
+        float[] thisEntries = this.getVector();
+        float[] vEntries = v.getVector();
+        int length = thisEntries.length;
+
+        if (!this.isSameLength(v)) {
+            throw new InvalidMatrixDimensionsException("Dot product is undefined as these vectors have different dimensions");
+        }
+
+        float result = 0;
+        for (int i = 0; i < length; i++) {
+            result += (thisEntries[i] * vEntries[i]);
+        }
+
+        return result;
+    }
+
+    public Matrix outerProduct (Vector v) {
+        return this.m.multiply(v.m.transpose());
+    }
+
     public void printVector () {
-        String vectorAsText = "VECTOR CEILING\n";
+        StringBuilder vectorAsText = new StringBuilder("VECTOR CEILING\n");
 
         for (float entry : this.getVector()) {
-            vectorAsText += (Float.toString(entry) + "\n");
+            vectorAsText.append(Float.toString(entry)).append("\n");
         }
-        vectorAsText += "VECTOR FLOOR";
+        vectorAsText.append("VECTOR FLOOR");
 
         System.out.println(vectorAsText);
     }
@@ -104,10 +104,7 @@ public class Vector {
         float[] thisEntries = this.getVector();
         float[] vEntries = v.getVector();
 
-        if (vEntries.length != thisEntries.length) {
-            return false;
-        }
-        return true;
+        return (vEntries.length != thisEntries.length);
     }
 
     public Vector copy () {
