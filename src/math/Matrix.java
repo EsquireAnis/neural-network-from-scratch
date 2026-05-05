@@ -46,9 +46,9 @@ public class Matrix {
         return new Matrix (newEntries, newNumRows, newNumColumns);
     }
 
-    public Matrix substract (Matrix m) {
+    public Matrix subtract(Matrix m) {
         if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
-            throw new InvalidMatrixDimensionsException("Substraction is impossible as matrix dimensions do not match");
+            throw new InvalidMatrixDimensionsException("Subtraction is impossible as matrix dimensions do not match");
         }
 
         Matrix mNegated = m.multiply(-1);

@@ -6,19 +6,53 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Brain {
+    private final float DEFAULT_LEARNING_RATE = 0.1f;
+    Scanner scanner = new Scanner(System.in);
+
+    private float learningRate;
     private List<Neuron> inputNeurons;
     private List<Neuron> outputNeurons;
+    private List<Neuron> allNeurons = new ArrayList<>();
     private List<Synapse> synapses;
 
     public Brain (List<Neuron> inputNeurons, List<Neuron> outputNeurons, List<Synapse> synapses) {
+        this.learningRate = DEFAULT_LEARNING_RATE;
         this.inputNeurons = inputNeurons;
         this.outputNeurons = outputNeurons;
         this.synapses = synapses;
+
+        this.allNeurons.addAll(inputNeurons);
+        this.allNeurons.addAll(outputNeurons);
     }
 
-    public void setupInputNeurons () {
-        Scanner scanner = new Scanner(System.in);
-        for (Neuron inputNeuron : inputNeurons) {
+    public Brain (List<Neuron> inputNeurons, List<Neuron> outputNeurons, List<Synapse> synapses, float learningRate) {
+        this.inputNeurons = inputNeurons;
+        this.outputNeurons = outputNeurons;
+        this.synapses = synapses;
+
+        if (learningRate <= 0) {
+            throw new InvalidLearningRateValue("Learning rate value must be positive");
+        }
+        this.learningRate = learningRate;
+    }
+
+    public void simulateCycle () {
+        resetNeurons();
+        setupInputNeurons();
+        propagateSignals();
+        learn();
+        printOutput();
+        printSynapses();
+    }
+
+    private void resetNeurons () {
+        for (Neuron neuron : allNeurons) {
+            neuron.resetActivation();
+        }
+    }
+
+    private void setupInputNeurons () {
+            for (Neuron inputNeuron : inputNeurons) {
             String message = "Activate neuron " + inputNeuron.getName() + "?\n1 or 0: ";
             System.out.print(message);
             int isActive = scanner.nextInt();
@@ -28,11 +62,21 @@ public class Brain {
         }
     }
 
-    public void simulateCycle () {
+    private void propagateSignals () {
         for (Synapse synapse : synapses) {
             synapse.sendSignal();
         }
+    }
 
+    private void learn() {
+        for (Synapse synapse : synapses) {
+            if (synapse.isCorrelated()) {
+                synapse.addWeight(learningRate);
+            }
+        }
+    }
+
+    public void printOutput () {
         for (Neuron outputNeuron : outputNeurons) {
             String message = "The neuron " + outputNeuron.getName() + " is: ";
             if (outputNeuron.isFiring()) {
@@ -45,13 +89,19 @@ public class Brain {
         }
     }
 
+    public void printSynapses () {
+        for (Synapse synapse : synapses) {
+            synapse.printSynapse();
+        }
+    }
+
     static void main() {
         Neuron Food = new Neuron("Food");
         Neuron Bell = new Neuron("Bell");
         Neuron Salivation = new Neuron("Salivation");
 
         Synapse food_salivation = new Synapse(Food, Salivation, 1);
-        Synapse bell_salivation = new Synapse(Food, Salivation, 0);
+        Synapse bell_salivation = new Synapse(Bell, Salivation, 0);
         Synapse food_bell = new Synapse(Food, Bell, 0);
 
         List<Neuron> inputNeurons = new ArrayList<>();
@@ -69,7 +119,10 @@ public class Brain {
 
         Brain brain = new Brain(inputNeurons, outputNeurons, synapses);
 
-        brain.setupInputNeurons();
-        brain.simulateCycle();
+        brain.printSynapses();
+
+        for (int i = 0; i < 10; i++) {
+            brain.simulateCycle();
+        }
     }
 }

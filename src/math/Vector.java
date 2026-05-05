@@ -81,9 +81,9 @@ public class Vector {
         return new Vector (newEntries);
     }
 
-    public Vector substract (Vector v) {
+    public Vector subtract(Vector v) {
         if (!this.isSameLength(v)) {
-            throw new InvalidMatrixDimensionsException("Substraction is undefined as these vectors have different dimensions");
+            throw new InvalidMatrixDimensionsException("Subtraction is undefined as these vectors have different dimensions");
         }
 
         return this.add(v.scale(-1));

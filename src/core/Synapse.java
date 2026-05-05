@@ -11,13 +11,23 @@ public class Synapse {
         this.weight = weight;
     }
 
-    public void sendSignal () {
+    void sendSignal () {
         if (from.isFiring()) {
             to.addActivation(weight);
         }
     }
 
-    public void alterWeight (float n) {
+    public boolean isCorrelated () {
+        return (from.isFiring() && to.isFiring()) ;
+    }
+
+    void addWeight(float n) {
         this.weight += n;
+    }
+
+    public void printSynapse () {
+        String message = "";
+        message += ("Weight from " + from.getName() + " to " + to.getName() + ": " + Float.toString(this.weight));
+        System.out.println(message);
     }
 }

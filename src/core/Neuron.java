@@ -16,14 +16,6 @@ public class Neuron {
         this.name = name;
     }
 
-    void setupThreshold (float threshold) {
-        if (threshold < 0 || threshold > 1) {
-            throw new InvalidThresholdValue("The threshold must be between 0 and 1");
-        }
-
-        this.threshold = threshold;
-    }
-
     void activate () {
         this.activation = 1;
     }
@@ -32,15 +24,23 @@ public class Neuron {
         this.activation += n;
     }
 
-    boolean isFiring () {
+    void resetActivation () {
+        this.activation = 0;
+    }
+
+    public boolean isFiring () {
         return (this.activation >= this.threshold);
     }
 
-    void resetActivation () {
-        this.activation = 0f;
+    void setupThreshold (float threshold) {
+        if (threshold < 0 || threshold > 1) {
+            throw new InvalidThresholdValueException("The threshold must be between 0 and 1");
+        }
+
+        this.threshold = threshold;
     }
 
-    String getName () {
+    public String getName () {
         return this.name;
     }
 }
