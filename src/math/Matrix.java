@@ -113,6 +113,26 @@ public class Matrix {
         return new Matrix(newEntries, newNumRows, newNumColumns);
     }
 
+    public Matrix HadamardProduct (Matrix m) {
+        if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
+            throw new InvalidMatrixDimensionsException("Addition is undefined as matrix dimensions do not match");
+        }
+
+        int newNumRows = this.numRows;
+        int newNumColumns = this.numColumns;
+        int newNumEntries = newNumRows * newNumColumns;
+        float[] newEntries = new float[newNumEntries];
+
+        for (int r = 0; r < newNumRows; r++) {
+            for (int c = 0; c < newNumColumns; c++) {
+                int newIndex = r * newNumColumns + c;
+                newEntries[newIndex] = this.matrix[r][c] * m.matrix[r][c];
+            }
+        }
+
+        return new Matrix (newEntries, newNumRows, newNumColumns);
+    }
+
     public void printMatrix () {
         StringBuilder matrixAsText = new StringBuilder("CEILING\n");
 
