@@ -110,7 +110,7 @@ public class Matrix {
     }
 
     public void printMatrix () {
-        StringBuilder matrixAsText = new StringBuilder("MATRIX CEILING\n");
+        StringBuilder matrixAsText = new StringBuilder("CEILING\n");
 
         for (int r = 0; r < this.numRows; r++) {
             for (int c = 0; c < this.numColumns; c++) {
@@ -120,7 +120,7 @@ public class Matrix {
                 matrixAsText.append("\n");
             }
             else {
-                matrixAsText.append("\nMATRIX FLOOR");
+                matrixAsText.append("\nFLOOR");
             }
         }
 

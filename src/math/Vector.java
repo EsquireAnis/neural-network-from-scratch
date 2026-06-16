@@ -14,12 +14,7 @@ public class Vector {
             throw new InvalidMatrixDimensionsException("This matrix cannot be treated as a vector");
         }
 
-        float[] entries = new float[matrix.length];
-        for (int r = 0; r < matrix.length; r++) {
-            entries[r] = matrix[r][0];
-        }
-
-        this.m = new Matrix(entries, entries.length, 1);
+        this.m = m;
     }
 
     public float[] getVector () {
@@ -34,38 +29,15 @@ public class Vector {
     }
 
     public Vector add (Vector v) {
-        float[] thisEntries = this.getVector();
-        float[] vEntries = v.getVector();
-        int length = thisEntries.length;
-
-        if (!this.isSameLength(v)) {
-            throw new InvalidMatrixDimensionsException("Addition is undefined as these vectors have different dimensions");
-        }
-
-        float[] newEntries = new float[length];
-        for (int i = 0; i < length; i++) {
-            newEntries[i] = thisEntries[i] + vEntries[i];
-        }
-
-        return new Vector (newEntries);
+        return new Vector(this.m.add(v.m));
     }
 
     public Vector subtract(Vector v) {
-        if (!this.isSameLength(v)) {
-            throw new InvalidMatrixDimensionsException("Subtraction is undefined as these vectors have different dimensions");
-        }
-
-        return this.add(v.scale(-1));
+        return new Vector(this.m.subtract(v.m));
     }
 
     public Vector scale (float n) {
-        float[] entries = this.getVector();
-
-        for (int i = 0; i < entries.length; i++) {
-            entries[i] *= n;
-        }
-
-        return new Vector(entries);
+        return new Vector(this.m.multiply(n));
     }
 
     public float dotProduct (Vector v) {
@@ -90,14 +62,7 @@ public class Vector {
     }
 
     public void printVector () {
-        StringBuilder vectorAsText = new StringBuilder("VECTOR CEILING\n");
-
-        for (float entry : this.getVector()) {
-            vectorAsText.append(Float.toString(entry)).append("\n");
-        }
-        vectorAsText.append("VECTOR FLOOR");
-
-        System.out.println(vectorAsText);
+        this.m.printMatrix();
     }
 
     private boolean isSameLength (Vector v) {
