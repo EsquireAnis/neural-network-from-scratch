@@ -1,4 +1,4 @@
-package core;
+package v1_biological;
 
 public class Synapse {
     private final Neuron from;

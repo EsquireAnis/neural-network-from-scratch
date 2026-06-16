@@ -1,4 +1,4 @@
-package core;
+package v1_biological;
 
 public class Neuron {
     private static final float DEFAULT_THRESHOLD = 0.5f;
