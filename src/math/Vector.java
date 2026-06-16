@@ -104,7 +104,7 @@ public class Vector {
         float[] thisEntries = this.getVector();
         float[] vEntries = v.getVector();
 
-        return (vEntries.length != thisEntries.length);
+        return (vEntries.length == thisEntries.length);
     }
 
     public Vector copy () {
