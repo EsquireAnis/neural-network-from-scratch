@@ -67,6 +67,10 @@ public class Matrix {
         return m;
     }
 
+    public Vector multiply (Vector v) {
+        return new Vector(this.multiply(v.vectorAsMatrix()));
+    }
+
     public Matrix multiply (Matrix m) {
         if (this.numColumns != m.numRows) {
             throw new InvalidMatrixDimensionsException("Matrices dimensions are invalid for multiplication");

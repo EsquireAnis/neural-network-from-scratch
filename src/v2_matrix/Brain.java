@@ -20,7 +20,7 @@ public class Brain {
         this.LEARNING_RATE = LEARNING_RATE;
     }
 
-    private void calculateOutput (Vector inputNeurons) {
+    private Vector calculateOutput (Vector inputNeurons) {
         return association.multiply(inputNeurons);
     }
 

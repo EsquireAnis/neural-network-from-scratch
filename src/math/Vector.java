@@ -7,7 +7,7 @@ public class Vector {
         this.m = new Matrix(entries, entries.length, 1);
     }
 
-    private Vector (Matrix m) {
+    Vector (Matrix m) {
         float[][] matrix = m.getMatrix();
 
         if (matrix[0].length != 1) {
@@ -26,6 +26,10 @@ public class Vector {
         }
 
         return entries;
+    }
+
+    Matrix vectorAsMatrix () {
+        return this.m.copy();
     }
 
     public Vector add (Vector v) {
