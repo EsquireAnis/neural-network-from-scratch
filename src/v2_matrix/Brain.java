@@ -7,7 +7,10 @@ public class Brain {
     private Matrix weights;
 
     // LEARNING_RATE must be between 0 (no learning) and 1 (immediate learning)
-    private float LEARNING_RATE = 0.2f;
+    // Empirically, 0.03 matches the real experiment results the best
+    private float LEARNING_RATE = 0.03f;
+    // Given that the activation is between 0 and 1, 0.5 is the logical threshold value
+    private float ACTIVATION_THRESHOLD = 0.5f;
 
     public Brain (Matrix weights) {
         this.weights = weights;
@@ -25,6 +28,17 @@ public class Brain {
 
     private Vector calculateOutputNeurons (Vector inputNeurons) {
         return weights.multiply(inputNeurons);
+    }
+
+    private Vector applyThreshold (Vector outputNeurons) {
+        float[] entries = outputNeurons.getVector();
+        for (int i = 0; i < entries.length; i++) {
+            if (entries[i] < this.ACTIVATION_THRESHOLD) {
+                entries[i] = 0;
+            }
+        }
+
+        return new Vector(entries);
     }
 
     private Matrix calculateDeltaWeights (Vector inputNeurons, Vector outputNeurons) {
@@ -45,7 +59,8 @@ public class Brain {
 
     private void simulateCycle(Vector inputNeurons) {
         Vector outputNeurons = this.calculateOutputNeurons(inputNeurons);
-        Matrix deltaWeights = this.calculateDeltaWeights(inputNeurons, outputNeurons);
+        Vector activatedOutputNeurons = this.applyThreshold(outputNeurons);
+        Matrix deltaWeights = this.calculateDeltaWeights(inputNeurons, activatedOutputNeurons);
         Matrix normalizedDeltaWeights = this.normalizeDeltaWeights(deltaWeights);
         this.updateWeights(normalizedDeltaWeights);
     }
@@ -55,15 +70,16 @@ public class Brain {
         Matrix weights = new Matrix(weights_array, 1 , 2);
         Brain brain = new Brain(weights);
 
-        float[] input_array = {1.0f, 1.0f};
-        Vector inputNeurons = new Vector(input_array);
+        float[] input_array1 = {1.0f, 1.0f};
+        float[] input_array2 = {0.0f, 1.0f};
+        Vector YesFood_YesBell = new Vector(input_array1);
+        Vector NoFood_YesBell = new Vector(input_array2);
 
-        brain.simulateCycle(inputNeurons);
-        brain.simulateCycle(inputNeurons);
-        brain.simulateCycle(inputNeurons);
-        brain.simulateCycle(inputNeurons);
-        brain.simulateCycle(inputNeurons);
-        brain.simulateCycle(inputNeurons);
+        for (int i = 0; i < 60; i++) {
+            brain.simulateCycle(YesFood_YesBell);
+        }
+
         brain.weights.printMatrix();
+//        brain.calculateOutputNeurons(NoFood_YesBell).printVector();
     }
 }
