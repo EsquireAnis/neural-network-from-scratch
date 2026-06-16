@@ -26,6 +26,10 @@ public class Matrix {
         return this.copy().matrix;
     }
 
+    public int getNumRows () {return this.numRows; }
+
+    public int getNumColumns () {return this.numColumns; }
+
     public Matrix add (Matrix m) {
         if (this.numRows != m.numRows || this.numColumns != m.numColumns) {
             throw new InvalidMatrixDimensionsException("Addition is undefined as matrix dimensions do not match");
