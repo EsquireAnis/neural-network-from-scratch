@@ -1,6 +1,7 @@
 package math;
 
 import math.tasks.ScalarMultiplicationTask;
+import math.tasks.ScalarShiftTask;
 
 public class Matrix {
     private final float[][] matrix;
@@ -165,19 +166,33 @@ public class Matrix {
     }
 
     public Matrix scalarShift (float n) {
-        int newNumRows = this.numRows;
-        int newNumColumns = this.numColumns;
-        int newNumEntries = newNumRows * newNumColumns;
-        float[] newEntries = new float[newNumEntries];
+        float[][] m = this.getMatrix();
+        int numRows = m.length;
+        int numColumns = m[0].length;
 
-        for (int r = 0; r < newNumRows; r++) {
-            for (int c = 0; c < newNumColumns; c++) {
-                int newIndex = r * newNumColumns + c;
-                newEntries[newIndex] = this.matrix[r][c] + n;
+        int numThreads = Runtime.getRuntime().availableProcessors();
+        Thread[] threads = new Thread[numThreads];
+
+        int chunk = numRows / numThreads;
+
+        for (int t = 0; t < numThreads; t++) {
+            int startRow = t * chunk;
+            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
+
+            threads[t] = new Thread(new ScalarShiftTask(m, n, startRow, endRow, numColumns));
+            threads[t].start();
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
-        return new Matrix (newEntries, newNumRows, newNumColumns);
+        return new Matrix (m);
     }
 
     public void printMatrix () {
@@ -218,6 +233,6 @@ public class Matrix {
         float[] entries = {1, 2, 3, 4, 5, 6};
         Matrix m = new Matrix(entries, 3, 2);
         m.printMatrix();
-        m.multiply(3).printMatrix();
+        m.scalarShift(3).printMatrix();
     }
 }
