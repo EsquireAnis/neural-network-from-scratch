@@ -5,7 +5,6 @@ import math.Vector;
 
 public class Brain {
     private Matrix weights;
-
     // LEARNING_RATE must be between 0 (no learning) and 1 (immediate learning)
     // Empirically, 0.03 matches the real experiment results the best
     private float LEARNING_RATE = 0.03f;
@@ -63,23 +62,5 @@ public class Brain {
         Matrix deltaWeights = this.calculateDeltaWeights(inputNeurons, activatedOutputNeurons);
         Matrix normalizedDeltaWeights = this.normalizeDeltaWeights(deltaWeights);
         this.updateWeights(normalizedDeltaWeights);
-    }
-
-    public static void main(String[] args) {
-        float[] weights_array = {1.0f, 0.0f};
-        Matrix weights = new Matrix(weights_array, 1 , 2);
-        Brain brain = new Brain(weights);
-
-        float[] input_array1 = {1.0f, 1.0f};
-        float[] input_array2 = {0.0f, 1.0f};
-        Vector YesFood_YesBell = new Vector(input_array1);
-        Vector NoFood_YesBell = new Vector(input_array2);
-
-        for (int i = 0; i < 60; i++) {
-            brain.simulateCycle(YesFood_YesBell);
-        }
-
-        brain.weights.printMatrix();
-//        brain.calculateOutputNeurons(NoFood_YesBell).printVector();
     }
 }
