@@ -1,5 +1,7 @@
 package v1_biological;
 
+import v1_biological.Exceptions.InvalidThresholdValueException;
+
 public class Neuron {
     private static final float DEFAULT_THRESHOLD = 0.5f;
     private static final String DEFAULT_NAME = "Generic neuron";

@@ -1,5 +1,7 @@
 package v1_biological;
 
+import v1_biological.Exceptions.InvalidLearningRateValue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,37 +94,6 @@ public class Brain {
     public void printSynapses () {
         for (Synapse synapse : synapses) {
             synapse.printSynapse();
-        }
-    }
-
-    static void main() {
-        Neuron Food = new Neuron("Food");
-        Neuron Bell = new Neuron("Bell");
-        Neuron Salivation = new Neuron("Salivation");
-
-        Synapse food_salivation = new Synapse(Food, Salivation, 1);
-        Synapse bell_salivation = new Synapse(Bell, Salivation, 0);
-        Synapse food_bell = new Synapse(Food, Bell, 0);
-
-        List<Neuron> inputNeurons = new ArrayList<>();
-        List<Neuron> outputNeurons = new ArrayList<>();
-
-        List<Synapse> synapses = new ArrayList<>();
-
-        inputNeurons.add(Food);
-        inputNeurons.add(Bell);
-        outputNeurons.add(Salivation);
-
-        synapses.add(food_salivation);
-        synapses.add(bell_salivation);
-        synapses.add(food_bell);
-
-        Brain brain = new Brain(inputNeurons, outputNeurons, synapses);
-
-        brain.printSynapses();
-
-        for (int i = 0; i < 10; i++) {
-            brain.simulateCycle();
         }
     }
 }

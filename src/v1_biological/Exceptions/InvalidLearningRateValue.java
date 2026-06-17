@@ -1,4 +1,4 @@
-package v1_biological;
+package v1_biological.Exceptions;
 
 public class InvalidLearningRateValue extends RuntimeException {
     public InvalidLearningRateValue(String message) {
