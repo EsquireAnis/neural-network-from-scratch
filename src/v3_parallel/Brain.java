@@ -1,4 +1,4 @@
-package v2_matrix;
+package v3_parallel;
 
 import math.Matrix;
 import math.Vector;
