@@ -137,7 +137,7 @@ public class Matrix {
         return new Matrix (newEntries, newNumRows, newNumColumns);
     }
 
-    public Matrix HadamardAddition (float n) {
+    public Matrix scalarShift(float n) {
         int newNumRows = this.numRows;
         int newNumColumns = this.numColumns;
         int newNumEntries = newNumRows * newNumColumns;

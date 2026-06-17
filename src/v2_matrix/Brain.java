@@ -46,7 +46,7 @@ public class Brain {
     }
 
     private Matrix normalizeDeltaWeights (Matrix deltaWeights) {
-        Matrix availableCapacity = (this.weights.multiply(-1)).HadamardAddition(1);
+        Matrix availableCapacity = (this.weights.multiply(-1)).scalarShift(1);
         Matrix normalizedDeltaWeights = deltaWeights.HadamardProduct(availableCapacity);
 
         return normalizedDeltaWeights;
