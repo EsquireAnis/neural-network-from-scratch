@@ -1,5 +1,7 @@
 package math;
 
+import math.tasks.ScalarMultiplicationTask;
+
 public class Matrix {
     private final float[][] matrix;
     private final int numRows;
@@ -20,6 +22,12 @@ public class Matrix {
                 this.matrix[r][c] = entries[arrayIndex];
             }
         }
+    }
+
+    Matrix (float[][] matrix) {
+        this.matrix = matrix;
+        this.numRows = matrix.length;
+        this.numColumns = matrix[0].length;
     }
 
     public float[][] getMatrix () {
@@ -61,14 +69,33 @@ public class Matrix {
     }
 
     public Matrix multiply (float n) {
-        Matrix m = this.copy();
-        for (int r = 0; r < m.numRows; r++) {
-            for (int c = 0; c < m.numColumns; c++) {
-                m.matrix[r][c] *= n;
+        float[][] m = this.getMatrix();
+        int numRows = m.length;
+        int numColumns = m[0].length;
+
+        int numThreads = Runtime.getRuntime().availableProcessors();
+        Thread[] threads = new Thread[numThreads];
+
+        int chunk = numRows / numThreads;
+
+        for (int t = 0; t < numThreads; t++) {
+            int startRow = t * chunk;
+            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
+
+            threads[t] = new Thread(new ScalarMultiplicationTask(m, n, startRow, endRow, numColumns));
+            threads[t].start();
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
-        return m;
+        return new Matrix (m);
     }
 
     public Vector multiply (Vector v) {
@@ -185,5 +212,12 @@ public class Matrix {
         }
 
         return new Matrix (newEntries, newNumRows, newNumColumns);
+    }
+
+    public static void main(String[] args) {
+        float[] entries = {1, 2, 3, 4, 5, 6};
+        Matrix m = new Matrix(entries, 3, 2);
+        m.printMatrix();
+        m.multiply(3).printMatrix();
     }
 }
