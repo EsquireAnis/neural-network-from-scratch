@@ -1,5 +1,6 @@
 package math;
 
+import math.tasks.HadamardProductTask;
 import math.tasks.ScalarMultiplicationTask;
 import math.tasks.ScalarShiftTask;
 
@@ -150,19 +151,34 @@ public class Matrix {
             throw new InvalidMatrixDimensionsException("Addition is undefined as matrix dimensions do not match");
         }
 
-        int newNumRows = this.numRows;
-        int newNumColumns = this.numColumns;
-        int newNumEntries = newNumRows * newNumColumns;
-        float[] newEntries = new float[newNumEntries];
+        float[][] m1 = this.getMatrix();
+        float[][] m2 = m.getMatrix();
+        int numRows = m1.length;
+        int numColumns = m1[0].length;
 
-        for (int r = 0; r < newNumRows; r++) {
-            for (int c = 0; c < newNumColumns; c++) {
-                int newIndex = r * newNumColumns + c;
-                newEntries[newIndex] = this.matrix[r][c] * m.matrix[r][c];
+        int numThreads = Runtime.getRuntime().availableProcessors();
+        Thread[] threads = new Thread[numThreads];
+
+        int chunk = numRows / numThreads;
+
+        for (int t = 0; t < numThreads; t++) {
+            int startRow = t * chunk;
+            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
+
+            threads[t] = new Thread(new HadamardProductTask(m1, m2, startRow, endRow, numColumns));
+            threads[t].start();
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
-        return new Matrix (newEntries, newNumRows, newNumColumns);
+        return new Matrix(m1);
     }
 
     public Matrix scalarShift (float n) {
@@ -230,9 +246,14 @@ public class Matrix {
     }
 
     public static void main(String[] args) {
-        float[] entries = {1, 2, 3, 4, 5, 6};
-        Matrix m = new Matrix(entries, 3, 2);
-        m.printMatrix();
-        m.scalarShift(3).printMatrix();
+        float[] entries1 = {1, 2, 3, 4, 5, 6};
+        Matrix m1 = new Matrix(entries1, 3, 2);
+        m1.printMatrix();
+
+        float[] entries2 = {7, 8, 9, 10, 11, 12};
+        Matrix m2 = new Matrix(entries2, 3, 2);
+        m2.printMatrix();
+
+        m1.HadamardProduct(m2).printMatrix();
     }
 }
