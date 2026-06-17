@@ -1,5 +1,6 @@
 package v3_parallel;
 
+import Exceptions.InvalidLearningRateException;
 import math.Matrix;
 import math.Vector;
 

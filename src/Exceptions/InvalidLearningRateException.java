@@ -1,4 +1,4 @@
-package v3_parallel;
+package Exceptions;
 
 public class InvalidLearningRateException extends RuntimeException {
     public InvalidLearningRateException(String message) {

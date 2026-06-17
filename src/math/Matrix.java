@@ -1,5 +1,6 @@
 package math;
 
+import Exceptions.InvalidMatrixDimensionsException;
 import math.tasks.MatrixMatrixMultiplicationTask;
 
 public class Matrix {
