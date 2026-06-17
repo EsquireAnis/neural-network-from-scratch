@@ -25,6 +25,10 @@ public class Brain {
         }
     }
 
+    public Matrix getWeights () {
+        return this.weights.copy();
+    }
+
     private Vector calculateOutputNeurons (Vector inputNeurons) {
         return weights.multiply(inputNeurons);
     }
@@ -56,7 +60,7 @@ public class Brain {
         this.weights = this.weights.add(normalizedDeltaWeights);
     }
 
-    private void simulateCycle(Vector inputNeurons) {
+    public void simulateCycle(Vector inputNeurons) {
         Vector outputNeurons = this.calculateOutputNeurons(inputNeurons);
         Vector activatedOutputNeurons = this.applyThreshold(outputNeurons);
         Matrix deltaWeights = this.calculateDeltaWeights(inputNeurons, activatedOutputNeurons);
