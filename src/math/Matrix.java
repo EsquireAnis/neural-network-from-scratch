@@ -1,5 +1,7 @@
 package math;
 
+import Exceptions.InvalidMatrixDimensionsException;
+
 public class Matrix {
     private final float[][] matrix;
     private final int numRows;

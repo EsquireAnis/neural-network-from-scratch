@@ -1,4 +1,4 @@
-package v2_matrix;
+package Exceptions;
 
 public class InvalidLearningRateException extends RuntimeException {
     public InvalidLearningRateException(String message) {

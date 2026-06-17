@@ -1,4 +1,4 @@
-package math;
+package Exceptions;
 
 public class InvalidMatrixDimensionsException extends RuntimeException {
     public InvalidMatrixDimensionsException(String message) {

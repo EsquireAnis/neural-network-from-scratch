@@ -1,5 +1,7 @@
 package math;
 
+import Exceptions.InvalidMatrixDimensionsException;
+
 public class Vector {
     private final Matrix m;
 

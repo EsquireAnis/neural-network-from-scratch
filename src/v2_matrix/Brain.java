@@ -1,5 +1,6 @@
 package v2_matrix;
 
+import Exceptions.InvalidLearningRateException;
 import math.Matrix;
 import math.Vector;
 

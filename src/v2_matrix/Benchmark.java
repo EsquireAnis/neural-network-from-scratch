@@ -5,8 +5,8 @@ import math.Vector;
 
 public class Benchmark {
     public static void main(String[] args) {
-        int CYCLES = 500;
-        int size = 2000;
+        int CYCLES = 100;
+        int size = 3000;
 
         float[] weights_array = new float[size * size];
         for (int i = 0; i < weights_array.length; i++) {
