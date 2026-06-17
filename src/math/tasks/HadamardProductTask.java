@@ -8,12 +8,12 @@ public class HadamardProductTask implements Runnable {
     private final int endRow;
     private final int numColumns;
 
-    public HadamardProductTask (float[][] firstMatrix, float[][] secondMatrix, int startRow, int endRow, int numColumns) {
+    public HadamardProductTask (float[][] firstMatrix, float[][] secondMatrix, int startRow, int endRow) {
         this.firstMatrix = firstMatrix;
         this.secondMatrix = secondMatrix;
         this.startRow = startRow;
         this.endRow = endRow;
-        this.numColumns = numColumns;
+        this.numColumns = firstMatrix[0].length;
     }
 
     @Override

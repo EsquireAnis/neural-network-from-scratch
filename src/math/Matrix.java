@@ -1,6 +1,7 @@
 package math;
 
 import math.tasks.HadamardProductTask;
+import math.tasks.MatrixMatrixMultiplicationTask;
 import math.tasks.ScalarMultiplicationTask;
 import math.tasks.ScalarShiftTask;
 
@@ -73,7 +74,6 @@ public class Matrix {
     public Matrix multiply (float n) {
         float[][] m = this.getMatrix();
         int numRows = m.length;
-        int numColumns = m[0].length;
 
         int numThreads = Runtime.getRuntime().availableProcessors();
         Thread[] threads = new Thread[numThreads];
@@ -84,7 +84,7 @@ public class Matrix {
             int startRow = t * chunk;
             int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
 
-            threads[t] = new Thread(new ScalarMultiplicationTask(m, n, startRow, endRow, numColumns));
+            threads[t] = new Thread(new ScalarMultiplicationTask(m, n, startRow, endRow));
             threads[t].start();
         }
 
@@ -109,25 +109,35 @@ public class Matrix {
             throw new InvalidMatrixDimensionsException("Matrices dimensions are invalid for multiplication");
         }
 
-        int newNumRows = this.numRows;
-        int newNumColumns = m.numColumns;
-        int newNumEntries = newNumRows * newNumColumns;
-        float[] newEntries = new float[newNumEntries];
+        float[][] leftMatrix = this.getMatrix();
+        float[][] rightMatrix = m.getMatrix();
+        int leftRows = leftMatrix.length;
+        int rightColumns = rightMatrix[0].length;
+        float[][] resultMatrix = new float[leftRows][rightColumns];
 
-        for (int rLeft = 0; rLeft < this.numRows; rLeft++) {
-            for (int cRight = 0; cRight < m.numColumns; cRight++) {
-                int newIndex = rLeft * newNumColumns + cRight;
-                float newEntry = 0;
+        int numThreads = Runtime.getRuntime().availableProcessors();
+        Thread[] threads = new Thread[numThreads];
 
-                for (int k = 0; k < this.numColumns; k++) {
-                    newEntry += (this.matrix[rLeft][k] * m.matrix[k][cRight]);
-                }
+        int chunk = leftRows / numThreads;
 
-                newEntries[newIndex] = newEntry;
+        for (int t = 0; t < numThreads; t++) {
+            int startRow = t * chunk;
+            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
+
+            threads[t] = new Thread(new MatrixMatrixMultiplicationTask(leftMatrix, rightMatrix, resultMatrix, startRow, endRow));
+            threads[t].start();
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
-        return new Matrix(newEntries, newNumRows, newNumColumns);
+        return new Matrix(resultMatrix);
     }
 
     public Matrix transpose () {
@@ -154,7 +164,6 @@ public class Matrix {
         float[][] m1 = this.getMatrix();
         float[][] m2 = m.getMatrix();
         int numRows = m1.length;
-        int numColumns = m1[0].length;
 
         int numThreads = Runtime.getRuntime().availableProcessors();
         Thread[] threads = new Thread[numThreads];
@@ -165,7 +174,7 @@ public class Matrix {
             int startRow = t * chunk;
             int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
 
-            threads[t] = new Thread(new HadamardProductTask(m1, m2, startRow, endRow, numColumns));
+            threads[t] = new Thread(new HadamardProductTask(m1, m2, startRow, endRow));
             threads[t].start();
         }
 
@@ -184,7 +193,6 @@ public class Matrix {
     public Matrix scalarShift (float n) {
         float[][] m = this.getMatrix();
         int numRows = m.length;
-        int numColumns = m[0].length;
 
         int numThreads = Runtime.getRuntime().availableProcessors();
         Thread[] threads = new Thread[numThreads];
@@ -195,7 +203,7 @@ public class Matrix {
             int startRow = t * chunk;
             int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
 
-            threads[t] = new Thread(new ScalarShiftTask(m, n, startRow, endRow, numColumns));
+            threads[t] = new Thread(new ScalarShiftTask(m, n, startRow, endRow));
             threads[t].start();
         }
 
@@ -251,9 +259,9 @@ public class Matrix {
         m1.printMatrix();
 
         float[] entries2 = {7, 8, 9, 10, 11, 12};
-        Matrix m2 = new Matrix(entries2, 3, 2);
+        Matrix m2 = new Matrix(entries2, 2, 3);
         m2.printMatrix();
 
-        m1.HadamardProduct(m2).printMatrix();
+        m1.multiply(m2).printMatrix();
     }
 }
