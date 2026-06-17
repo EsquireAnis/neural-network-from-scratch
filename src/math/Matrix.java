@@ -1,9 +1,6 @@
 package math;
 
-import math.tasks.HadamardProductTask;
 import math.tasks.MatrixMatrixMultiplicationTask;
-import math.tasks.ScalarMultiplicationTask;
-import math.tasks.ScalarShiftTask;
 
 public class Matrix {
     private final float[][] matrix;
@@ -72,32 +69,14 @@ public class Matrix {
     }
 
     public Matrix multiply (float n) {
-        float[][] m = this.getMatrix();
-        int numRows = m.length;
-
-        int numThreads = Runtime.getRuntime().availableProcessors();
-        Thread[] threads = new Thread[numThreads];
-
-        int chunk = numRows / numThreads;
-
-        for (int t = 0; t < numThreads; t++) {
-            int startRow = t * chunk;
-            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
-
-            threads[t] = new Thread(new ScalarMultiplicationTask(m, n, startRow, endRow));
-            threads[t].start();
-        }
-
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+        Matrix m = this.copy();
+        for (int r = 0; r < m.numRows; r++) {
+            for (int c = 0; c < m.numColumns; c++) {
+                m.matrix[r][c] *= n;
             }
         }
 
-        return new Matrix (m);
+        return m;
     }
 
     public Vector multiply (Vector v) {
@@ -115,7 +94,7 @@ public class Matrix {
         int rightColumns = rightMatrix[0].length;
         float[][] resultMatrix = new float[leftRows][rightColumns];
 
-        int numThreads = Runtime.getRuntime().availableProcessors();
+        int numThreads = Math.min(Runtime.getRuntime().availableProcessors(), leftRows);
         Thread[] threads = new Thread[numThreads];
 
         int chunk = leftRows / numThreads;
@@ -161,62 +140,35 @@ public class Matrix {
             throw new InvalidMatrixDimensionsException("Addition is undefined as matrix dimensions do not match");
         }
 
-        float[][] m1 = this.getMatrix();
-        float[][] m2 = m.getMatrix();
-        int numRows = m1.length;
+        int newNumRows = this.numRows;
+        int newNumColumns = this.numColumns;
+        int newNumEntries = newNumRows * newNumColumns;
+        float[] newEntries = new float[newNumEntries];
 
-        int numThreads = Runtime.getRuntime().availableProcessors();
-        Thread[] threads = new Thread[numThreads];
-
-        int chunk = numRows / numThreads;
-
-        for (int t = 0; t < numThreads; t++) {
-            int startRow = t * chunk;
-            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
-
-            threads[t] = new Thread(new HadamardProductTask(m1, m2, startRow, endRow));
-            threads[t].start();
-        }
-
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+        for (int r = 0; r < newNumRows; r++) {
+            for (int c = 0; c < newNumColumns; c++) {
+                int newIndex = r * newNumColumns + c;
+                newEntries[newIndex] = this.matrix[r][c] * m.matrix[r][c];
             }
         }
 
-        return new Matrix(m1);
+        return new Matrix (newEntries, newNumRows, newNumColumns);
     }
 
     public Matrix scalarShift (float n) {
-        float[][] m = this.getMatrix();
-        int numRows = m.length;
+        int newNumRows = this.numRows;
+        int newNumColumns = this.numColumns;
+        int newNumEntries = newNumRows * newNumColumns;
+        float[] newEntries = new float[newNumEntries];
 
-        int numThreads = Runtime.getRuntime().availableProcessors();
-        Thread[] threads = new Thread[numThreads];
-
-        int chunk = numRows / numThreads;
-
-        for (int t = 0; t < numThreads; t++) {
-            int startRow = t * chunk;
-            int endRow = (t == numThreads - 1) ? numRows : startRow + chunk;
-
-            threads[t] = new Thread(new ScalarShiftTask(m, n, startRow, endRow));
-            threads[t].start();
-        }
-
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+        for (int r = 0; r < newNumRows; r++) {
+            for (int c = 0; c < newNumColumns; c++) {
+                int newIndex = r * newNumColumns + c;
+                newEntries[newIndex] = this.matrix[r][c] + n;
             }
         }
 
-        return new Matrix (m);
+        return new Matrix (newEntries, newNumRows, newNumColumns);
     }
 
     public void printMatrix () {
